@@ -1,0 +1,5 @@
+nccl-tests/
+results/*.txt
+results/*.csv
+results/*.png
+__pycache__/
