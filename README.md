@@ -72,3 +72,7 @@ The sweep above is steady-state bandwidth. LLM tensor-parallel decode lives in t
 regime — tiny (≤64 KB) all-reduces, twice per layer, latency-bound on the ~22 µs floor. See
 [`tp_latency/`](tp_latency/): CUDA-Graph capture vs eager, custom one-shot all-reduce vs NCCL,
 and an analytical comms-roofline for TP=N decode validated against measurement.
+
+---
+
+_Part of my portfolio — [waynehacking8.github.io](https://waynehacking8.github.io/). Writeup: [Where tensor-parallel inference hits the NVLink wall](https://waynehacking8.github.io/blog/nccl-nvlink-bandwidth/)._
