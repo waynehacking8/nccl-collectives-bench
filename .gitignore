@@ -1,5 +1,4 @@
 nccl-tests/
-results/*.txt
-results/*.csv
-results/*.png
 __pycache__/
+*.pyc
+# results/ is intentionally tracked — raw nccl-tests output is the evidence.

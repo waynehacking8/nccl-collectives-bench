@@ -1,0 +1,30 @@
+### ALGO=Ring size=268435456
+   268435456      67108864     float     sum      -1  1187.29  226.09  339.14       0  1182.80  226.95  340.42       0
+# Avg bus bandwidth    : 339.781 
+### ALGO=Ring size=1073741824
+  1073741824     268435456     float     sum      -1  4528.41  237.11  355.67       0  4521.11  237.50  356.24       0
+# Avg bus bandwidth    : 355.956 
+### ALGO=Ring size=8589934592
+  8589934592    2147483648     float     sum      -1  35175.3  244.20  366.31       0  35237.1  243.78  365.66       0
+# Avg bus bandwidth    : 365.984 
+### ALGO=Tree size=268435456
+   268435456      67108864     float     sum      -1  1706.78  157.28  235.91       0  1709.14  157.06  235.59       0
+# Avg bus bandwidth    : 235.751 
+### ALGO=Tree size=1073741824
+  1073741824     268435456     float     sum      -1  6433.99  166.89  250.33       0  6446.99  166.55  249.82       0
+# Avg bus bandwidth    : 250.076 
+### ALGO=Tree size=8589934592
+  8589934592    2147483648     float     sum      -1  49674.6  172.92  259.39       0  49695.8  172.85  259.28       0
+# Avg bus bandwidth    : 259.331 
+### ALGO=NVLS size=268435456
+   268435456      67108864     float     sum      -1  1120.54  239.56  359.34       0  1121.46  239.36  359.04       0
+# Avg bus bandwidth    : 359.19 
+### ALGO=NVLS size=1073741824
+  1073741824     268435456     float     sum      -1  4336.86  247.59  371.38       0  4333.65  247.77  371.65       0
+# Avg bus bandwidth    : 371.515 
+### ALGO=NVLS size=8589934592
+  8589934592    2147483648     float     sum      -1  34221.4  251.01  376.52       0  34240.5  250.87  376.31       0
+# Avg bus bandwidth    : 376.411 
+### ALGO=CollnetChain size=268435456
+### ALGO=CollnetChain size=1073741824
+### ALGO=CollnetChain size=8589934592

@@ -42,5 +42,28 @@ make sweep            # run the collective sweeps -> results/
 make analyze          # parse + plot + compute % of NVLink peak -> results/report.md
 ```
 
-## Results
-Populated after running on the 4×H100 box — see `results/`. **(in progress)**
+## Results — measured on 4× H100 80GB SXM5 (NVSwitch, NCCL 2.18.3)
+
+Full writeup: [`results/report.md`](results/report.md). Bandwidth curves: `results/busbw.png`.
+
+NVLink budget (measured via `nvidia-smi nvlink --status`): 18 links × 26.562 GB/s = **478 GB/s** per-GPU unidirectional.
+
+| collective | peak busbw | % of NVLink uni | small-msg latency floor |
+|---|---|---|---|
+| all_reduce | 366 GB/s | 77% | 22.7 µs |
+| all_gather | 344 GB/s | 72% | 16.8 µs |
+| reduce_scatter | 350 GB/s | 73% | 21.4 µs |
+
+**Algorithm study (all_reduce busbw):** NVLS (NVLink SHARP, in-network reduction on NVSwitch)
+beats Ring at every size — 376 vs 366 GB/s @8GB, 359 vs 340 @256MB — and Tree (259 GB/s,
+multi-node-oriented) trails both. **Protocol study @256MB:** Simple 340 / LL128 313 / LL 147 GB/s.
+
+> Note: `make sweep` defaults to 4 GPUs. On a shared box, pin to free GPUs and never touch
+> a busy one: `CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=2,3,4,5 make sweep`
+> (or `--gpus '"device=2,3,4,5"'` under Docker / NGC `nvcr.io/nvidia/pytorch`).
+
+### Next: the TP-inference latency wall *(frontier extension, in progress)*
+The sweep above is steady-state bandwidth. LLM tensor-parallel decode lives in the *opposite*
+regime — tiny (≤64 KB) all-reduces, twice per layer, latency-bound on the ~22 µs floor. See
+[`tp_latency/`](tp_latency/): CUDA-Graph capture vs eager, custom one-shot all-reduce vs NCCL,
+and an analytical comms-roofline for TP=N decode validated against measurement.
