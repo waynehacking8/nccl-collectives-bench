@@ -58,6 +58,11 @@ NVLink budget (measured via `nvidia-smi nvlink --status`): 18 links × 26.562 GB
 beats Ring at every size — 376 vs 366 GB/s @8GB, 359 vs 340 @256MB — and Tree (259 GB/s,
 multi-node-oriented) trails both. **Protocol study @256MB:** Simple 340 / LL128 313 / LL 147 GB/s.
 
+**Scaling with GPU count** (all_reduce peak busbw, `analysis/scaling.py`): 2→347, 4→365,
+**6→443 GB/s (93% of the 478 GB/s NVLink budget)**. Busbw rises with N because the ring
+factor 2(N-1)/N climbs toward 2 — so the 4-GPU 366 GB/s above is a mid-scale operating point,
+not the ceiling; at 6 GPUs over NVSwitch the fabric runs near peak.
+
 > Note: `make sweep` defaults to 4 GPUs. On a shared box, pin to free GPUs and never touch
 > a busy one: `CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=2,3,4,5 make sweep`
 > (or `--gpus '"device=2,3,4,5"'` under Docker / NGC `nvcr.io/nvidia/pytorch`).
