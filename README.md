@@ -100,8 +100,10 @@ The original sweep showed an 82 µs eager spike at one message size, initially a
 NVSwitch-fabric jitter from other tenants on the box. A controlled re-run with every
 non-production tenant stopped (`results/quiet/`) **rejects that attribution**: a same-magnitude
 spike reappears at a *different* size, the eager/graph latency floors are unchanged
-(23.1/13.7 µs shared → 23.2/12.9 µs quiet), and the bandwidth sweep matches within ±4% at every
-size. The spike is **host-side launch jitter intrinsic to eager-mode submission** — and it never
+(23.1/13.7 µs shared → 23.2/12.9 µs quiet), and the bandwidth sweep matches at steady-state
+large-message sizes (all_reduce within 4.4%; the all_gather protocol-transition zone,
+128 KB–2 MB, shows run-to-run variation up to ~25% — normal NCCL protocol switching, not tenant
+interference). The spike is **host-side launch jitter intrinsic to eager-mode submission** — and it never
 appears in CUDA-Graph mode in either run. So CUDA Graphs don't just cut TP-decode latency ~1.7×;
 they remove its tail jitter (the thing that would show up as p99 ITL spikes in serving). Full
 table: [`results/tp_latency_report.md`](results/tp_latency_report.md) §4.
