@@ -84,7 +84,7 @@ and the literature commonly reports ~75–85% of the unidirectional budget.
 > a busy one: `CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=2,3,4,5 make sweep`
 > (or `--gpus '"device=2,3,4,5"'` under Docker / NGC `nvcr.io/nvidia/pytorch`).
 
-### Next: the TP-inference latency wall *(frontier extension, in progress)*
+### The TP-inference latency wall
 The sweep above is steady-state bandwidth. LLM tensor-parallel decode lives in the *opposite*
 regime — tiny (≤64 KB) all-reduces, twice per layer, latency-bound on the ~22 µs floor. See
 [`tp_latency/`](tp_latency/): CUDA-Graph capture vs eager, custom one-shot all-reduce vs NCCL,
@@ -93,6 +93,18 @@ and an analytical comms-roofline for TP=N decode validated against measurement.
 **TP=4 all-reduce latency in the decode regime: CUDA-Graph capture flattens the ~22 µs eager floor (and its launch-jitter spikes) to a stable ~12–16 µs across the small (≤64 KB, shaded) message sizes a TP decode actually uses:**
 
 ![TP=4 all-reduce latency vs message size, eager vs CUDA Graph, on a 4-GPU slice of an 8× H100 NVSwitch host](results/tp_latency.png)
+
+### Verification: shared-box vs quiet-box re-run (the jitter question)
+
+The original sweep showed an 82 µs eager spike at one message size, initially attributed to
+NVSwitch-fabric jitter from other tenants on the box. A controlled re-run with every
+non-production tenant stopped (`results/quiet/`) **rejects that attribution**: a same-magnitude
+spike reappears at a *different* size, the eager/graph latency floors are unchanged
+(23.1/13.7 µs shared → 23.2/12.9 µs quiet), and the bandwidth sweep matches within ±4% at every
+size. The spike is **host-side launch jitter intrinsic to eager-mode submission** — and it never
+appears in CUDA-Graph mode in either run. So CUDA Graphs don't just cut TP-decode latency ~1.7×;
+they remove its tail jitter (the thing that would show up as p99 ITL spikes in serving). Full
+table: [`results/tp_latency_report.md`](results/tp_latency_report.md) §4.
 
 ---
 

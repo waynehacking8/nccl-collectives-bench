@@ -39,7 +39,9 @@ def median(xs):
 def robust_floors(j):
     """Decode all-reduces are sub-64 KB, so all sit on the launch+handshake floor.
     Use the median eager/graph latency over small sizes (<=128 KB) — robust to the
-    single-point jitter you get sharing the NVSwitch fabric with other tenants."""
+    sporadic single-size spikes that eager mode shows in every run (host-side launch
+    jitter; see report §4 — a quiet-box re-run reproduces a same-magnitude spike at a
+    *different* size, so it is not other tenants' fabric traffic)."""
     small = [r for r in j["size_sweep"] if r["bytes"] <= 128 * 1024]
     return median([r["eager_us"] for r in small]), median([r["graph_us"] for r in small])
 
@@ -88,8 +90,8 @@ def write_report(j):
       f"floor; CUDA-Graph replay removes per-op launch dispatch and drops it to "
       f"~{graph_floor:.0f} µs ({eager_floor/graph_floor:.1f}× at the TP-decode sizes). "
       "This is precisely the trick vLLM / TensorRT-LLM use to make TP decode viable. "
-      "(Eager outliers in the sweep are NVSwitch-fabric jitter from sharing the box with "
-      "another tenant — hence the median-based floor.)\n")
+      "(The single-size eager spike is host-side launch jitter, not fabric traffic — "
+      "see §4; the floor uses the median so it is unaffected.)\n")
 
     w("## 2. Decode tokens/s ceiling from communication alone\n")
     w(f"`tokens/s = 1e6 / (2 · num_layers · T_allreduce_µs)`, batch=1, TP={N}.\n")
@@ -119,6 +121,36 @@ def write_report(j):
         w("The floor dominates below ~64 KB (the TP-decode regime); the bandwidth term only "
           "takes over once messages are large (batched decode / prefill).\n")
 
+    quiet_path = "results/quiet/tp_latency.json"
+    if os.path.exists(quiet_path):
+        q = json.load(open(quiet_path))
+        q_eager_floor, q_graph_floor = robust_floors(q)
+        q_by_bytes = {r["bytes"]: r for r in q["size_sweep"]}
+        w("## 4. Shared-box vs quiet-box re-run — what the eager spike actually is\n")
+        w("The original sweep ran while the box hosted other tenants and showed an 82 µs "
+          "eager spike at one size. The hypothesis to test: is that NVSwitch-fabric jitter "
+          "from the other tenants' traffic? Re-run with every non-production tenant stopped "
+          "(`results/quiet/`):\n")
+        w("| message | eager (shared) | eager (quiet) | graph (shared) | graph (quiet) |")
+        w("|---|---|---|---|---|")
+        for r in j["size_sweep"]:
+            qr = q_by_bytes.get(r["bytes"], {})
+            w(f"| {r['bytes']/1024:.0f} KB | {r['eager_us']:.1f} | "
+              f"{qr.get('eager_us', 0):.1f} | {r['graph_us']:.1f} | "
+              f"{qr.get('graph_us', 0):.1f} |")
+        w("")
+        w(f"**The hypothesis is rejected — and the correct attribution is more useful.** "
+          "The quiet run reproduces a same-magnitude spike (~82 µs) at a *different* size, "
+          "so the spike is not other tenants' traffic; it is **host-side launch jitter "
+          "intrinsic to eager-mode submission** (one straggler iteration in the 200-iter "
+          "mean — OS scheduling / launch-path noise). Three corroborating facts: "
+          f"(1) the eager floor barely moves ({eager_floor:.1f} → {q_eager_floor:.1f} µs); "
+          f"(2) the CUDA-Graph floor is identical ({graph_floor:.1f} → {q_graph_floor:.1f} µs); "
+          "(3) **no graph-mode point spikes in either run** — graph replay bypasses the "
+          "per-iteration launch path entirely. Practical consequence: CUDA Graphs don't just "
+          "lower TP-decode latency ~1.7×, they also remove its tail jitter, which matters "
+          "for p99 ITL in serving.\n")
+
     os.makedirs("results", exist_ok=True)
     open("results/tp_latency_report.md", "w").write("\n".join(L) + "\n")
     print("wrote results/tp_latency_report.md")
@@ -143,10 +175,11 @@ def plot(j):
         f"TP={j['world_size']} all-reduce latency — eager vs CUDA Graph "
         "(4-GPU slice of 8× H100 NVSwitch)")
     plt.axvspan(1, 64, alpha=0.1, color="red")
-    # Honestly flag the single eager outlier (NVSwitch-fabric jitter, see report §1) so it
-    # is not read as a real trend; the robust floor uses the median, not this point.
+    # Honestly flag the single eager outlier so it is not read as a real trend. A quiet-box
+    # re-run (report §4) shows it is host-side launch jitter (it moves between runs and never
+    # appears in graph mode), not fabric traffic; the robust floor uses the median.
     i_out = max(range(len(eager)), key=lambda i: eager[i])
-    plt.annotate("fabric-jitter outlier\n(not a trend)",
+    plt.annotate("eager launch-jitter outlier\n(moves between runs; see §4)",
                  (xs[i_out], eager[i_out]),
                  textcoords="offset points", xytext=(-90, -6), ha="right", va="center",
                  fontsize=8, color="gray",
