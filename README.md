@@ -1,8 +1,9 @@
-# NCCL Collectives Benchmark — 4× H100 NVLink
+# NCCL Collectives Benchmark — H100 NVSwitch
 
 Micro-benchmarks of the NCCL collective operations that bound distributed LLM training
-and tensor-parallel inference — **all-reduce, all-gather, reduce-scatter** — measured on
-**4× H100 over NVLink**, with bus-bandwidth analysis against the theoretical link budget.
+and tensor-parallel inference — **all-reduce, all-gather, reduce-scatter** — measured on a
+**4-GPU slice of an 8× H100 NVSwitch host** (scaling study uses 2/4/6 GPUs), with
+bus-bandwidth analysis against the theoretical link budget.
 
 Makes multi-GPU communication concrete: all-reduce bus bandwidth measured across message
 sizes, where it saturates NVLink, and why tensor parallelism is communication-bound at
@@ -17,11 +18,12 @@ small batch sizes.
 
 ## What this is NOT
 - Not a reimplementation of NCCL — it drives the official `nccl-tests` and adds analysis.
-- Not multi-node (yet) — single 4×H100 box, NVLink. The same harness extends to InfiniBand
-  multi-node (roadmap) by changing the launcher.
+- Not multi-node (yet) — single 8× H100 NVSwitch box, NVLink. The same harness extends to
+  InfiniBand multi-node (roadmap) by changing the launcher.
 
 ## Hardware
-- 4× NVIDIA H100 80GB, NVLink (intra-node). `nccl-tests` + CUDA toolkit.
+- 8× NVIDIA H100 80GB SXM5 on an NVSwitch fabric (all pairs NV18); runs use a 4-GPU slice
+  (the scaling study sweeps 2/4/6 GPUs). `nccl-tests` + CUDA toolkit.
 
 ## Layout
 ```
@@ -32,17 +34,17 @@ analysis/plot.py              # bandwidth vs size + busbw/algbw curves -> result
 analysis/theoretical.py       # NVLink budget + % of peak achieved
 docs/design-decisions.md      # busbw vs algbw, why all-reduce is the one to watch
 docs/roadmap.md
-results/                      # outputs (populated on the 4xH100 box)
+results/                      # outputs (populated on the H100 NVSwitch box)
 ```
 
-## Quick start (run on the 4×H100 box)
+## Quick start (run on the H100 NVSwitch box)
 ```bash
 make setup            # build nccl-tests
 make sweep            # run the collective sweeps -> results/
 make analyze          # parse + plot + compute % of NVLink peak -> results/report.md
 ```
 
-## Results — measured on 4× H100 80GB SXM5 (NVSwitch, NCCL 2.18.3)
+## Results — measured on a 4-GPU slice of an 8× H100 80GB SXM5 NVSwitch host (NCCL 2.18.3)
 
 Full writeup: [`results/report.md`](results/report.md). Bandwidth curves: `results/busbw.png`.
 
@@ -59,9 +61,15 @@ beats Ring at every size — 376 vs 366 GB/s @8GB, 359 vs 340 @256MB — and Tre
 multi-node-oriented) trails both. **Protocol study @256MB:** Simple 340 / LL128 313 / LL 147 GB/s.
 
 **Scaling with GPU count** (all_reduce peak busbw, `analysis/scaling.py`): 2→347, 4→365,
-**6→443 GB/s (93% of the 478 GB/s NVLink budget)**. Busbw rises with N because the ring
-factor 2(N-1)/N climbs toward 2 — so the 4-GPU 366 GB/s above is a mid-scale operating point,
-not the ceiling; at 6 GPUs over NVSwitch the fabric runs near peak.
+**6→443 GB/s**. Busbw rises with N because higher GPU counts utilize the NVSwitch fabric
+more fully — more concurrent NVLink paths and better NVLS (in-switch reduction) efficiency
+keep the links saturated. (The ring factor 2(N−1)/N is *divided out* of algbw to define
+busbw precisely so it compares across N; it is the divisor that produces busbw, not a
+mechanism that pushes it up.) So the 4-GPU 366 GB/s above is a mid-scale operating point,
+not the ceiling. The 6-GPU 443 GB/s is **93% of the 478 GB/s figure**, but read that as an
+optimistic upper-bound framing, not "near line-rate": the 478 GB/s is the *unidirectional*
+per-GPU link budget, whereas steady-state all-reduce traffic is simultaneously bidirectional,
+and the literature commonly reports ~75–85% of the unidirectional budget.
 
 > Note: `make sweep` defaults to 4 GPUs. On a shared box, pin to free GPUs and never touch
 > a busy one: `CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=2,3,4,5 make sweep`
