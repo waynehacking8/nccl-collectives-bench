@@ -1,6 +1,6 @@
 # TP-decode all-reduce: the latency wall, and CUDA Graphs
 
-TP=4 (4× H100, NVSwitch), bf16, 200 timed iters. Decode issues 2 all-reduces/layer at batch=1; each moves only `hidden×2` bytes, so it is latency-bound, not bandwidth-bound.
+TP=4 (4-GPU slice of 8× H100 NVSwitch host), bf16, 200 timed iters. Decode issues 2 all-reduces/layer at batch=1; each moves only `hidden×2` bytes, so it is latency-bound, not bandwidth-bound.
 
 ## 1. Eager vs CUDA-Graph all-reduce latency (size sweep)
 

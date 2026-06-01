@@ -11,6 +11,6 @@ for csvf in sorted(glob.glob("results/*.csv")):
     if xs:
         plt.plot(xs, ys, marker=".", label=os.path.basename(csvf).replace(".csv", ""))
 plt.xscale("log", base=2); plt.xlabel("message size (bytes)"); plt.ylabel("bus bandwidth (GB/s)")
-plt.title("NCCL collectives — 4× H100 (NVSwitch host)"); plt.legend(framealpha=1.0); plt.grid(True, alpha=0.3)
+plt.title("NCCL collectives — 4-GPU slice of 8× H100 NVSwitch host"); plt.legend(framealpha=1.0); plt.grid(True, alpha=0.3)
 plt.tight_layout(); plt.savefig("results/busbw.png", dpi=130)
 print("wrote results/busbw.png")

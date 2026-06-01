@@ -58,7 +58,7 @@ NVLink budget (measured via `nvidia-smi nvlink --status`): 18 links × 26.562 GB
 
 **Bus bandwidth vs message size: all three collectives sit on a ~23 µs latency floor below ~1 MB, then ramp toward NVLink saturation (~340–366 GB/s) past a few MB — all_reduce leads at every size:**
 
-![Bus bandwidth (GB/s) vs message size for all_reduce, all_gather, and reduce_scatter on 4× H100 NVLink](results/busbw.png)
+![Bus bandwidth (GB/s) vs message size for all_reduce, all_gather, and reduce_scatter on a 4-GPU slice of an 8× H100 NVSwitch host](results/busbw.png)
 
 **Algorithm study (all_reduce busbw):** NVLS (NVLink SHARP, in-network reduction on NVSwitch)
 beats Ring at every size — 376 vs 366 GB/s @8GB, 359 vs 340 @256MB — and Tree (259 GB/s,
@@ -91,7 +91,7 @@ and an analytical comms-roofline for TP=N decode validated against measurement.
 
 **TP=4 all-reduce latency in the decode regime: CUDA-Graph capture flattens the ~22 µs eager floor (and its launch-jitter spikes) to a stable ~12–16 µs across the small (≤64 KB, shaded) message sizes a TP decode actually uses:**
 
-![TP=4 all-reduce latency vs message size, eager vs CUDA Graph, on 4× H100](results/tp_latency.png)
+![TP=4 all-reduce latency vs message size, eager vs CUDA Graph, on a 4-GPU slice of an 8× H100 NVSwitch host](results/tp_latency.png)
 
 ---
 

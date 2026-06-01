@@ -1,6 +1,6 @@
-# NCCL Collectives on 4× H100 (NVLink / NVSwitch) — Results
+# NCCL Collectives on a 4-GPU slice of an 8× H100 NVSwitch host — Results
 
-Single-node, 4× H100 80GB SXM5, intra-node NVSwitch (all pairs NV18). Driver 580.159.03, NCCL 2.18.3, nccl-tests, `-g 4 -w 5 -n 50`, sizes 8 B → 8 GB.
+Single-node, 4-GPU slice of an 8× H100 80GB SXM5 NVSwitch host (all pairs NV18; the scaling study sweeps 2/4/6 GPUs). Driver 580.159.03, NCCL 2.18.3, nccl-tests, `-g 4 -w 5 -n 50`, sizes 8 B → 8 GB.
 
 **NVLink budget (measured):** 18 links × 26.562 GB/s = **478 GB/s** per-GPU unidirectional.
 

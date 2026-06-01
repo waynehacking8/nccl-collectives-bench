@@ -72,7 +72,7 @@ def write_report(j):
     L = []
     w = L.append
     w("# TP-decode all-reduce: the latency wall, and CUDA Graphs\n")
-    w(f"TP={N} (4× H100, NVSwitch), bf16, {j['iters']} timed iters. "
+    w(f"TP={N} (4-GPU slice of 8× H100 NVSwitch host), bf16, {j['iters']} timed iters. "
       "Decode issues 2 all-reduces/layer at batch=1; each moves only "
       "`hidden×2` bytes, so it is latency-bound, not bandwidth-bound.\n")
 
@@ -132,15 +132,26 @@ def plot(j):
     except Exception:
         return
     xs = [r["bytes"] / 1024 for r in j["size_sweep"]]
+    eager = [r["eager_us"] for r in j["size_sweep"]]
     plt.figure(figsize=(8, 5))
-    plt.plot(xs, [r["eager_us"] for r in j["size_sweep"]], "o-", label="eager")
+    plt.plot(xs, eager, "o-", label="eager")
     plt.plot(xs, [r["graph_us"] for r in j["size_sweep"]], "s-", label="CUDA Graph")
     plt.xscale("log", base=2)
     plt.xlabel("all-reduce message size (KB)")
     plt.ylabel("latency (µs)")
-    plt.title(f"TP={j['world_size']} all-reduce latency — eager vs CUDA Graph (4×H100)")
+    plt.title(
+        f"TP={j['world_size']} all-reduce latency — eager vs CUDA Graph "
+        "(4-GPU slice of 8× H100 NVSwitch)")
     plt.axvspan(1, 64, alpha=0.1, color="red")
-    plt.legend(); plt.grid(True, alpha=0.3)
+    # Honestly flag the single eager outlier (NVSwitch-fabric jitter, see report §1) so it
+    # is not read as a real trend; the robust floor uses the median, not this point.
+    i_out = max(range(len(eager)), key=lambda i: eager[i])
+    plt.annotate("fabric-jitter outlier\n(not a trend)",
+                 (xs[i_out], eager[i_out]),
+                 textcoords="offset points", xytext=(-90, -6), ha="right", va="center",
+                 fontsize=8, color="gray",
+                 arrowprops=dict(arrowstyle="->", color="gray", lw=0.8))
+    plt.legend(loc="upper right"); plt.grid(True, alpha=0.3)
     plt.tight_layout(); plt.savefig("results/tp_latency.png", dpi=130)
     print("wrote results/tp_latency.png")
 
