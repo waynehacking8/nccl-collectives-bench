@@ -4,9 +4,10 @@
 Parses results/scaling.txt (all_reduce_perf at -g 2/4/6, 256 MB .. 8 GB) and reports peak
 busbw per GPU count against the measured NVLink budget. Busbw rises with N because higher
 GPU counts utilize the NVSwitch fabric more fully (more concurrent NVLink paths and better
-NVLS in-switch-reduction efficiency keep the links saturated) — NOT because of the ring
-factor 2(N-1)/N. That factor is divided out of algbw to *define* busbw so it compares across
-N; it is the divisor that produces busbw, not a mechanism that pushes it up. The 6-GPU ~93%
+NVLS in-switch-reduction efficiency keep the links saturated) — NOT as a mechanical artifact
+of the ring factor. busbw = algbw x 2(N-1)/N (the nccl-tests formula) converts algorithm
+bandwidth into the physical per-link traffic rate, which is the quantity the hardware bounds;
+with a fixed link speed busbw would stay flat as N grows, so any rise is real. The 6-GPU ~93%
 of the per-GPU unidirectional budget is an optimistic upper-bound framing (all-reduce traffic
 is simultaneously bidirectional in steady state; literature commonly reports ~75-85%).
 """
@@ -67,9 +68,11 @@ def main():
     L += ["",
           "Busbw climbs with N because higher GPU counts utilize the NVSwitch fabric more "
           "fully — more concurrent NVLink paths and better NVLS (in-switch reduction) "
-          "efficiency keep the links saturated. (The ring factor 2(N-1)/N is *divided out* of "
-          "algbw to define busbw, precisely so busbw is comparable across N; it is the divisor "
-          "that produces busbw, not a mechanism that mechanically pushes it up.) The 4-GPU "
+          "efficiency keep the links saturated. (busbw is defined as algbw x 2(N-1)/N — the "
+          "nccl-tests formula — converting algorithm bandwidth into the physical per-link "
+          "traffic rate, which is what the hardware bounds; with a fixed link speed busbw "
+          "would stay flat as N grows, so the rise is real fabric-utilization gain, not an "
+          "artifact of the factor.) The 4-GPU "
           "number quoted elsewhere in this repo is a mid-scale operating point, not the "
           "ceiling. The 6-GPU 93% should be read as an optimistic upper-bound framing rather "
           "than \"near line-rate\": the 478 GB/s budget is *unidirectional* per-GPU, while "

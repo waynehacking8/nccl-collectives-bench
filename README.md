@@ -67,9 +67,10 @@ multi-node-oriented) trails both. **Protocol study @256MB:** Simple 340 / LL128 
 **Scaling with GPU count** (all_reduce peak busbw, `analysis/scaling.py`): 2→347, 4→365,
 **6→443 GB/s**. Busbw rises with N because higher GPU counts utilize the NVSwitch fabric
 more fully — more concurrent NVLink paths and better NVLS (in-switch reduction) efficiency
-keep the links saturated. (The ring factor 2(N−1)/N is *divided out* of algbw to define
-busbw precisely so it compares across N; it is the divisor that produces busbw, not a
-mechanism that pushes it up.) So the 4-GPU 366 GB/s above is a mid-scale operating point,
+keep the links saturated. (busbw is defined as algbw × 2(N−1)/N — the nccl-tests formula —
+converting algorithm bandwidth into the physical per-link traffic rate, which is what the
+hardware bounds; with a fixed link speed busbw would stay flat as N grows, so the rise is
+real fabric-utilization gain, not an artifact of the factor.) So the 4-GPU 366 GB/s above is a mid-scale operating point,
 not the ceiling. The 6-GPU 443 GB/s is **93% of the 478 GB/s figure**, but read that as an
 optimistic upper-bound framing, not "near line-rate": the 478 GB/s is the *unidirectional*
 per-GPU link budget, whereas steady-state all-reduce traffic is simultaneously bidirectional,
