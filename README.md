@@ -4,9 +4,9 @@ Micro-benchmarks of the NCCL collective operations that bound distributed LLM tr
 and tensor-parallel inference — **all-reduce, all-gather, reduce-scatter** — measured on
 **4× H100 over NVLink**, with bus-bandwidth analysis against the theoretical link budget.
 
-Built to make multi-GPU communication concrete: not "I've heard of NCCL" but "I measured
-all-reduce bus bandwidth across message sizes, saw where it saturates NVLink, and can
-explain why tensor parallelism is communication-bound at small batch sizes."
+Makes multi-GPU communication concrete: all-reduce bus bandwidth measured across message
+sizes, where it saturates NVLink, and why tensor parallelism is communication-bound at
+small batch sizes.
 
 ## What this is
 - A thin, reproducible wrapper over NVIDIA `nccl-tests` (the canonical tool) plus a parser
@@ -72,6 +72,15 @@ The sweep above is steady-state bandwidth. LLM tensor-parallel decode lives in t
 regime — tiny (≤64 KB) all-reduces, twice per layer, latency-bound on the ~22 µs floor. See
 [`tp_latency/`](tp_latency/): CUDA-Graph capture vs eager, custom one-shot all-reduce vs NCCL,
 and an analytical comms-roofline for TP=N decode validated against measurement.
+
+---
+
+## References
+- [NVIDIA/nccl-tests](https://github.com/NVIDIA/nccl-tests) — the canonical benchmark this harness drives.
+- [NVIDIA/nccl](https://github.com/NVIDIA/nccl) — the collective communication library under test.
+
+## Disclaimer
+Personal project for learning and benchmarking. Views and results are my own and do not represent any employer.
 
 ---
 
