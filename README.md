@@ -56,6 +56,10 @@ NVLink budget (measured via `nvidia-smi nvlink --status`): 18 links × 26.562 GB
 | all_gather | 344 GB/s | 72% | 16.8 µs |
 | reduce_scatter | 350 GB/s | 73% | 21.4 µs |
 
+**Bus bandwidth vs message size: all three collectives sit on a ~23 µs latency floor below ~1 MB, then ramp toward NVLink saturation (~340–366 GB/s) past a few MB — all_reduce leads at every size:**
+
+![Bus bandwidth (GB/s) vs message size for all_reduce, all_gather, and reduce_scatter on 4× H100 NVLink](results/busbw.png)
+
 **Algorithm study (all_reduce busbw):** NVLS (NVLink SHARP, in-network reduction on NVSwitch)
 beats Ring at every size — 376 vs 366 GB/s @8GB, 359 vs 340 @256MB — and Tree (259 GB/s,
 multi-node-oriented) trails both. **Protocol study @256MB:** Simple 340 / LL128 313 / LL 147 GB/s.
@@ -71,6 +75,10 @@ optimistic upper-bound framing, not "near line-rate": the 478 GB/s is the *unidi
 per-GPU link budget, whereas steady-state all-reduce traffic is simultaneously bidirectional,
 and the literature commonly reports ~75–85% of the unidirectional budget.
 
+**Peak all_reduce busbw climbs with GPU count (2→347, 4→365, 6→443 GB/s) as more concurrent NVLink paths and NVLS in-switch reduction keep the NVSwitch fabric saturated — the dashed line is the 478 GB/s unidirectional per-GPU budget:**
+
+![Peak all_reduce bus bandwidth vs GPU count (2/4/6) against the 478 GB/s NVLink unidirectional budget](results/scaling_busbw.png)
+
 > Note: `make sweep` defaults to 4 GPUs. On a shared box, pin to free GPUs and never touch
 > a busy one: `CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=2,3,4,5 make sweep`
 > (or `--gpus '"device=2,3,4,5"'` under Docker / NGC `nvcr.io/nvidia/pytorch`).
@@ -80,6 +88,10 @@ The sweep above is steady-state bandwidth. LLM tensor-parallel decode lives in t
 regime — tiny (≤64 KB) all-reduces, twice per layer, latency-bound on the ~22 µs floor. See
 [`tp_latency/`](tp_latency/): CUDA-Graph capture vs eager, custom one-shot all-reduce vs NCCL,
 and an analytical comms-roofline for TP=N decode validated against measurement.
+
+**TP=4 all-reduce latency in the decode regime: CUDA-Graph capture flattens the ~22 µs eager floor (and its launch-jitter spikes) to a stable ~12–16 µs across the small (≤64 KB, shaded) message sizes a TP decode actually uses:**
+
+![TP=4 all-reduce latency vs message size, eager vs CUDA Graph, on 4× H100](results/tp_latency.png)
 
 ---
 
