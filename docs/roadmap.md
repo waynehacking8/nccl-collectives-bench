@@ -37,8 +37,18 @@
 
 Goal: turn published NCCL/NVSwitch reference numbers into measured rows from this exact host.
 
-- [ ] **NCCL ≥2.27 symmetric memory vs the measured latency floors (reference: up to 9× lower
+- [x] **NCCL ≥2.27 symmetric memory vs the measured latency floors (reference: up to 9× lower
   small-message latency).**
+  **DONE (published claim does NOT reproduce here — better attribution found) — README
+  "symmetric memory" section / `results/symmetric/report.md` / `results/symmetric_latency.png`.**
+  Measured with NCCL 2.29.2 (pytorch:26.02 container), same 4-GPU slice, eager + CUDA Graph,
+  `-R 2` vs unregistered. Result: small-message latency is **neutral** (floor 23.6 vs 25.1 µs;
+  the 9× claim targets multi-node/NVLS proxy paths, not launch-bound NVSwitch all_reduce);
+  the real measured gain is **large-message bandwidth: +33% busbw** (247→329 GB/s @ 16 MB,
+  1.7× lower latency @ 4 MB) via the zero-copy NVLink path. Bonus finding: NCCL 2.29's eager
+  floor is ~2 µs worse than 2.18.3's. The ~23 µs launch floor survives everything except CUDA
+  Graphs → the TP-decode ceiling (271/456 tok/s, Llama-70B TP=4) stands unchanged.
+  Sweep script: `scripts/run_symmetric_sweep.sh`; analysis: `analysis/symmetric_compare.py`.
   - **Question:** the repo's floors are 23.1 µs (eager) / 13.7 µs (CUDA Graph). NCCL 2.27's
     user-buffer registration / symmetric memory claims large small-message gains — how much of
     the floor is recoverable on this box without root?

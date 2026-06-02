@@ -108,6 +108,40 @@ appears in CUDA-Graph mode in either run. So CUDA Graphs don't just cut TP-decod
 they remove its tail jitter (the thing that would show up as p99 ITL spikes in serving). Full
 table: [`results/tp_latency_report.md`](results/tp_latency_report.md) §4.
 
+### NCCL ≥2.27 symmetric memory vs the measured floors (the literature-ceiling test)
+
+NCCL 2.27 introduced symmetric (window) buffer registration with a published claim of **up to
+9× lower small-message latency**. If real on this box, it would re-price the repo's central
+numbers — the 23.1 µs eager floor and the TP-decode comms ceiling derived from it. Measured on
+the **same 4-GPU slice** with NCCL **2.29.2** (`scripts/run_symmetric_sweep.sh`; eager + CUDA
+Graph, registered `-R 2` vs not; raw logs in `results/symmetric/`, analysis in
+[`results/symmetric/report.md`](results/symmetric/report.md)):
+
+| configuration | small-msg floor (µs) | busbw @ 16 MB |
+|---|---|---|
+| NCCL 2.18.3 eager (committed reference) | 23.3 | 247 GB/s |
+| NCCL 2.29.2 eager | 25.1 | 248 GB/s |
+| NCCL 2.29.2 eager + **symmetric** | 23.6 | **329 GB/s** |
+| NCCL 2.29.2 CUDA Graph | 16.3 | 238 GB/s |
+| NCCL 2.29.2 CUDA Graph + **symmetric** | 19.7 | 300 GB/s |
+
+![Symmetric memory latency overlay](results/symmetric_latency.png)
+
+**The 9× does not happen here — and where the gain actually lands is the finding:**
+
+1. **Small-message latency: symmetric registration is neutral** (~23–25 µs floor regardless).
+   The 9× claim belongs to paths where registration removes proxy/copy work (multi-node
+   networking, NVLS trees) — a 4-GPU NVSwitch all_reduce at small sizes is *launch-bound*, and
+   no buffer trick removes kernel launches.
+2. **Large-message bandwidth: +33%** (247 → 329 GB/s busbw at 16 MB; 1.7× lower latency at
+   4 MB). Symmetric registration enables the zero-copy NVLink path — a bandwidth optimization,
+   not a latency one.
+3. **NCCL 2.29 is ~2 µs *slower* than 2.18 at small sizes** on identical hardware — version
+   upgrades need re-measurement.
+4. **The ~23 µs launch floor survives version upgrades and registration alike** — reinforcing
+   the repo's central conclusion: only CUDA-Graph capture breaks it, so the TP-decode comms
+   ceiling (271/456 tok/s for Llama-70B TP=4) stands unchanged.
+
 ---
 
 ## References

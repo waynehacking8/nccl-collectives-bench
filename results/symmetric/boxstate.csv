@@ -1,0 +1,9 @@
+index, clocks.current.sm [MHz], temperature.gpu, power.draw [W], memory.used [MiB]
+0, 1980 MHz, 37, 279.82 W, 75688 MiB
+1, 1980 MHz, 32, 117.70 W, 1167 MiB
+2, 345 MHz, 28, 73.35 W, 4 MiB
+3, 345 MHz, 26, 72.11 W, 130 MiB
+4, 345 MHz, 26, 72.32 W, 4 MiB
+5, 345 MHz, 28, 70.19 W, 4 MiB
+6, 345 MHz, 28, 69.99 W, 126 MiB
+7, 1980 MHz, 29, 119.68 W, 531 MiB
