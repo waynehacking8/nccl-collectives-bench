@@ -2,6 +2,13 @@
 
 Same 4-GPU NVSwitch slice (host GPUs 2,3,4,5) as every committed measurement; all_reduce_perf, 50 iters, out-of-place times. Committed floors (NCCL 2.18.3): **23.1 us eager / 13.7 us CUDA Graph**. Published claim (NCCL 2.27 release notes): up to **9x** lower small-message latency from symmetric (window) registration.
 
+> Box state during this run: other tenants were active on GPUs outside the measurement slice
+> (`other_tenants.csv` — recorded for transparency). All five configurations in this report were
+> measured back-to-back in the same session, so the *within-report* comparisons (2.29 plain vs
+> 2.29 symmetric, eager vs CUDA Graph) are same-environment and unaffected. The *cross-session*
+> comparison against the committed 2.18.3 reference (the small 23.3-vs-25.1 µs delta) spans two
+> different box states — read that row as indicative, not as a controlled version regression test.
+
 ## Latency floors (median over sizes <= 2 KB)
 
 | configuration | floor (us) | vs 2.18.3 eager (23.1 us) |

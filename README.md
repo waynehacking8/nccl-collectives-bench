@@ -137,7 +137,9 @@ Graph, registered `-R 2` vs not; raw logs in `results/symmetric/`, analysis in
    4 MB). Symmetric registration enables the zero-copy NVLink path — a bandwidth optimization,
    not a latency one.
 3. **NCCL 2.29 is ~2 µs *slower* than 2.18 at small sizes** on identical hardware — version
-   upgrades need re-measurement.
+   upgrades need re-measurement. (Caveat: the 2.18 reference comes from an earlier session;
+   other tenants were active outside the measurement slice during this run — see
+   `results/symmetric/report.md` — so read this delta as indicative, not controlled.)
 4. **The ~23 µs launch floor survives version upgrades and registration alike** — reinforcing
    the repo's central conclusion: only CUDA-Graph capture breaks it, so the TP-decode comms
    ceiling (271/456 tok/s for Llama-70B TP=4) stands unchanged.
