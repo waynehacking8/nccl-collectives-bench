@@ -60,6 +60,14 @@ Goal: turn published NCCL/NVSwitch reference numbers into measured rows from thi
     re-prices the TP-decode ceiling (271/456 tok/s for Llama-70B TP=4) — if the floor halves,
     the comms-bound ceiling roughly doubles.
 
+- [ ] **Scaling-study algorithm attribution (busbw vs physical link traffic).** The 2/4/6-GPU
+  scaling runs used NCCL's automatic algorithm selection without `NCCL_DEBUG` capture, so the
+  6-GPU 443 GB/s busbw cannot be attributed: Ring would mean 93% physical link utilization (an
+  unexplained jump from the 4-GPU 76%), NVLS would mean ~56% (busbw inflated by a ring factor
+  that does not describe in-switch-reduction traffic). Re-run `-g 2/4/6` with
+  `NCCL_DEBUG=INFO,TUNING` and `NCCL_ALGO` pinned to Ring and NVLS separately; report physical
+  per-link traffic per algorithm. See `results/scaling_report.md` for the full decomposition.
+
 - [ ] **Candidates (spec on demand):** MSCCL++ vs NCCL (reference 3.8× small / 2.2× large on
   8×H100, arXiv:2504.09014); SM cost of collectives (NCCL 2.27 SHARP offload: 16→6 SMs) —
   measures the compute *stolen* by communication, a dimension this repo has not touched.

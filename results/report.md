@@ -53,7 +53,7 @@ GPU7	NV18	NV18	NV18	NV18	NV18	NV18	NV18	 X 	SYS	SYS	SYS	SYS	NODE	NODE	PXB	PXB	SY
 
 - **TP=4 all-reduce** runs once per transformer layer (after attention and after MLP). At decode batch=1 each all-reduce is a few hundred KB — below the crossover, so latency-bound. Throughput-serving (large batch) pushes into the bandwidth regime where NVLS's ~376 GB/s matters.
 
-- **Choosing NVLS** (`NCCL_ALGO=NVLS`, default-on for NVSwitch) buys ~3–8% over Ring at the sizes TP inference uses, for free.
+- **Pinning NVLS** (`NCCL_ALGO=NVLS`) buys ~3–8% over Ring at the sizes TP inference uses. Don't assume the tuner picks it: NVLS support is detected on this box, but the auto-tuned 4-GPU sweep (366 GB/s) matches the pinned-Ring number, not pinned NVLS (376).
 
 - The measured ceiling (~77% of NVLink uni budget for ring all-reduce) is the honest number to plan around — not the 478 GB/s datasheet figure.
 
