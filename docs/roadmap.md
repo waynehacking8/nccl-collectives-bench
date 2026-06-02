@@ -60,13 +60,30 @@ Goal: turn published NCCL/NVSwitch reference numbers into measured rows from thi
     re-prices the TP-decode ceiling (271/456 tok/s for Llama-70B TP=4) — if the floor halves,
     the comms-bound ceiling roughly doubles.
 
-- [ ] **Scaling-study algorithm attribution (busbw vs physical link traffic).** The 2/4/6-GPU
+- [x] **Scaling-study algorithm attribution (busbw vs physical link traffic).** The 2/4/6-GPU
   scaling runs used NCCL's automatic algorithm selection without `NCCL_DEBUG` capture, so the
   6-GPU 443 GB/s busbw cannot be attributed: Ring would mean 93% physical link utilization (an
   unexplained jump from the 4-GPU 76%), NVLS would mean ~56% (busbw inflated by a ring factor
   that does not describe in-switch-reduction traffic). Re-run `-g 2/4/6` with
   `NCCL_DEBUG=INFO,TUNING` and `NCCL_ALGO` pinned to Ring and NVLS separately; report physical
   per-link traffic per algorithm. See `results/scaling_report.md` for the full decomposition.
+  **DONE (measured: Ring at 2/4 GPUs, NVLS at 6 — the 443 is not physical link traffic) —
+  `results/scaling_attributed/report.md` / `results/scaling_attributed/attribution.png`.**
+  - **Result:** 9 arms (`-g 2/4/6` × {auto, `NCCL_ALGO=Ring`, `NCCL_ALGO=NVLS`}, NCCL 2.29.2,
+    pytorch:26.02 container, host GPUs 2..7, `NCCL_DEBUG=INFO NCCL_DEBUG_SUBSYS=INIT,TUNING`
+    captured in every per-arm log). The tuner picks **Ring at 2 and 4 GPUs** and **NVLS at
+    6 GPUs** (`g6_auto.log`: `AllReduce: ... Bytes -> Algo NVLS proto SIMPLE`), uniformly
+    across all sizes 256 MB..8 GB. The committed 6-GPU 443 GB/s is therefore NVLS traffic: the
+    links physically carry ~algbw = 266 GB/s = **56% of the 478 GB/s budget**, not 93%. Ring's
+    physical link efficiency is flat across N (348 = 73% → 365 = 76% → 367 = 77%) — the
+    apparent jump was the ring normalization applied to non-ring traffic. This run reproduces
+    the committed peaks (347/365/443 GB/s, NCCL 2.18.3 bare-metal) within 0.5%, so the
+    attribution transfers to the committed scaling study. Bonus findings: the tuner leaves 3%
+    on the table at 4 GPUs (picks Ring 365 over available NVLS 376); pinned NVLS at 2 GPUs
+    collapses to 207 GB/s (40% slower than Ring); NVLS's real 6-GPU win is **+21% end-to-end
+    algbw** (220 → 266 GB/s vs pinned Ring), achieved by removing traffic from the links, not
+    by saturating them. Sweep: `scripts/run_scaling_attributed.sh`; analysis + chart:
+    `analysis/scaling_attribution.py`.
 
 - [ ] **Candidates (spec on demand):** MSCCL++ vs NCCL (reference 3.8× small / 2.2× large on
   8×H100, arXiv:2504.09014); SM cost of collectives (NCCL 2.27 SHARP offload: 16→6 SMs) —

@@ -1,0 +1,926 @@
+# nccl-tests version 2.18.3 nccl-headers=22902 nccl-library=22902
+# Collective test starting: all_reduce_perf
+# nThread 1 nGpus 4 minBytes 268435456 maxBytes 8589934592 step: 2(factor) warmup iters: 5 iters: 50 agg iters: 1 validation: 1 graph: 0 unalign: 0
+#
+# Using devices
+#  Rank  0 Group  0 Pid   1417 on 38dcf168f605 device  0 [0000:41:00] NVIDIA H100 80GB HBM3
+#  Rank  1 Group  0 Pid   1417 on 38dcf168f605 device  1 [0000:44:00] NVIDIA H100 80GB HBM3
+#  Rank  2 Group  0 Pid   1417 on 38dcf168f605 device  2 [0000:86:00] NVIDIA H100 80GB HBM3
+#  Rank  3 Group  0 Pid   1417 on 38dcf168f605 device  3 [0000:87:00] NVIDIA H100 80GB HBM3
+38dcf168f605:1417:1417 [0] NCCL INFO ENV/Plugin: Could not find: libnccl-env.so
+38dcf168f605:1417:1417 [0] NCCL INFO cudaDriverVersion 13010
+38dcf168f605:1417:1417 [0] NCCL INFO NCCL version 2.29.2+cuda13.1
+38dcf168f605:1417:1417 [0] NCCL INFO NCCL git version stable 07fa371c7
+38dcf168f605:1417:1428 [3] NCCL INFO NET/Plugin: Loaded net plugin NCCL RDMA Plugin v11 (v11)
+38dcf168f605:1417:1428 [3] NCCL INFO NET/Plugin: Loaded collnet plugin SHARP (v11)
+38dcf168f605:1417:1428 [3] NCCL INFO Successfully loaded external network plugin /opt/hpcx/nccl_rdma_sharp_plugin/lib/libnccl-net.so
+38dcf168f605:1417:1428 [3] NCCL INFO Plugin Path : /opt/hpcx/nccl_rdma_sharp_plugin/lib/libnccl-net.so
+38dcf168f605:1417:1428 [3] NCCL INFO P2P plugin v11 IBext_v11
+38dcf168f605:1417:1428 [3] NCCL INFO NET/IB : No device found.
+38dcf168f605:1417:1428 [3] NCCL INFO NET/IB : Using [RO]; OOB eth0:172.17.0.3<0>
+38dcf168f605:1417:1428 [3] NCCL INFO Failed to initialize NET plugin IBext_v11
+38dcf168f605:1417:1428 [3] NCCL INFO NET/IB : No device found.
+38dcf168f605:1417:1428 [3] NCCL INFO NET/IB : Using [RO]; OOB eth0:172.17.0.3<0>
+38dcf168f605:1417:1428 [3] NCCL INFO Failed to initialize NET plugin IB
+38dcf168f605:1417:1428 [3] NCCL INFO NET/Socket : Using [0]eth0:172.17.0.3<0>
+38dcf168f605:1417:1428 [3] NCCL INFO Initialized NET plugin Socket
+38dcf168f605:1417:1428 [3] NCCL INFO Assigned NET plugin Socket to comm
+38dcf168f605:1417:1428 [3] NCCL INFO Using network Socket
+38dcf168f605:1417:1427 [2] NCCL INFO Initialized NET plugin Socket
+38dcf168f605:1417:1427 [2] NCCL INFO Assigned NET plugin Socket to comm
+38dcf168f605:1417:1427 [2] NCCL INFO Using network Socket
+38dcf168f605:1417:1426 [1] NCCL INFO Initialized NET plugin Socket
+38dcf168f605:1417:1426 [1] NCCL INFO Assigned NET plugin Socket to comm
+38dcf168f605:1417:1426 [1] NCCL INFO Using network Socket
+38dcf168f605:1417:1425 [0] NCCL INFO Initialized NET plugin Socket
+38dcf168f605:1417:1425 [0] NCCL INFO Assigned NET plugin Socket to comm
+38dcf168f605:1417:1425 [0] NCCL INFO Using network Socket
+38dcf168f605:1417:1428 [3] NCCL INFO [Rank 3] ncclCommInitRankConfig comm 0x559e612daa70 rank 3 nranks 4 cudaDev 3 nvmlDev 3 busId 87000 commId 0xc065ec09e837104c - Init START
+38dcf168f605:1417:1427 [2] NCCL INFO [Rank 2] ncclCommInitRankConfig comm 0x559e611d1ce0 rank 2 nranks 4 cudaDev 2 nvmlDev 2 busId 86000 commId 0xc065ec09e837104c - Init START
+38dcf168f605:1417:1426 [1] NCCL INFO [Rank 1] ncclCommInitRankConfig comm 0x559e610c8f50 rank 1 nranks 4 cudaDev 1 nvmlDev 1 busId 44000 commId 0xc065ec09e837104c - Init START
+38dcf168f605:1417:1425 [0] NCCL INFO [Rank 0] ncclCommInitRankConfig comm 0x559e60fc01c0 rank 0 nranks 4 cudaDev 0 nvmlDev 0 busId 41000 commId 0xc065ec09e837104c - Init START
+38dcf168f605:1417:1427 [2] NCCL INFO RAS client listening socket at ::1<28028>
+38dcf168f605:1417:1427 [2] NCCL INFO MNNVL busId 0x86000 fabric UUID 0.0 cliqueId 0x0 state 3 healthMask 0x0
+38dcf168f605:1417:1428 [3] NCCL INFO MNNVL busId 0x87000 fabric UUID 0.0 cliqueId 0x0 state 3 healthMask 0x0
+38dcf168f605:1417:1426 [1] NCCL INFO MNNVL busId 0x44000 fabric UUID 0.0 cliqueId 0x0 state 3 healthMask 0x0
+38dcf168f605:1417:1425 [0] NCCL INFO MNNVL busId 0x41000 fabric UUID 0.0 cliqueId 0x0 state 3 healthMask 0x0
+38dcf168f605:1417:1427 [2] NCCL INFO ncclTopoGetCpuAffinity: Affinity for GPU 2 is 32-63,96-127. (GPU affinity = 32-63,96-127 ; CPU affinity = 0-127).
+38dcf168f605:1417:1428 [3] NCCL INFO ncclTopoGetCpuAffinity: Affinity for GPU 3 is 32-63,96-127. (GPU affinity = 32-63,96-127 ; CPU affinity = 0-127).
+38dcf168f605:1417:1426 [1] NCCL INFO ncclTopoGetCpuAffinity: Affinity for GPU 1 is 0-31,64-95. (GPU affinity = 0-31,64-95 ; CPU affinity = 0-127).
+38dcf168f605:1417:1426 [1] NCCL INFO NVLS multicast support is available on dev 1 (NVLS_NCHANNELS 16)
+38dcf168f605:1417:1428 [3] NCCL INFO NVLS multicast support is available on dev 3 (NVLS_NCHANNELS 16)
+38dcf168f605:1417:1425 [0] NCCL INFO ncclTopoGetCpuAffinity: Affinity for GPU 0 is 0-31,64-95. (GPU affinity = 0-31,64-95 ; CPU affinity = 0-127).
+38dcf168f605:1417:1425 [0] NCCL INFO NVLS multicast support is available on dev 0 (NVLS_NCHANNELS 16)
+38dcf168f605:1417:1427 [2] NCCL INFO NVLS multicast support is available on dev 2 (NVLS_NCHANNELS 16)
+38dcf168f605:1417:1427 [2] NCCL INFO comm 0x559e611d1ce0 rank 2 nRanks 4 nNodes 1 localRanks 4 localRank 2 MNNVL 0
+38dcf168f605:1417:1426 [1] NCCL INFO comm 0x559e610c8f50 rank 1 nRanks 4 nNodes 1 localRanks 4 localRank 1 MNNVL 0
+38dcf168f605:1417:1425 [0] NCCL INFO comm 0x559e60fc01c0 rank 0 nRanks 4 nNodes 1 localRanks 4 localRank 0 MNNVL 0
+38dcf168f605:1417:1427 [2] NCCL INFO Trees [0] 3/-1/-1->2->1 [1] 3/-1/-1->2->1 [2] 3/-1/-1->2->1 [3] 3/-1/-1->2->1 [4] 3/-1/-1->2->1 [5] 3/-1/-1->2->1 [6] 3/-1/-1->2->1 [7] 3/-1/-1->2->1 [8] 3/-1/-1->2->1 [9] 3/-1/-1->2->1 [10] 3/-1/-1->2->1 [11] 3/-1/-1->2->1 [12] 3/-1/-1->2->1 [13] 3/-1/-1->2->1 [14] 3/-1/-1->2->1 [15] 3/-1/-1->2->1 [16] 3/-1/-1->2->1 [17] 3/-1/-1->2->1 [18] 3/-1/-1->2->1 [19] 3/-1/-1->2->1 [20] 3/-1/-1->2->1 [21] 3/-1/-1->2->1 [22] 3/-1/-1->2->1 [23] 3/-1/-1->2->1
+38dcf168f605:1417:1427 [2] NCCL INFO P2P Chunksize set to 524288
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 00/24 : 0 1 2 3
+38dcf168f605:1417:1426 [1] NCCL INFO Trees [0] 2/-1/-1->1->0 [1] 2/-1/-1->1->0 [2] 2/-1/-1->1->0 [3] 2/-1/-1->1->0 [4] 2/-1/-1->1->0 [5] 2/-1/-1->1->0 [6] 2/-1/-1->1->0 [7] 2/-1/-1->1->0 [8] 2/-1/-1->1->0 [9] 2/-1/-1->1->0 [10] 2/-1/-1->1->0 [11] 2/-1/-1->1->0 [12] 2/-1/-1->1->0 [13] 2/-1/-1->1->0 [14] 2/-1/-1->1->0 [15] 2/-1/-1->1->0 [16] 2/-1/-1->1->0 [17] 2/-1/-1->1->0 [18] 2/-1/-1->1->0 [19] 2/-1/-1->1->0 [20] 2/-1/-1->1->0 [21] 2/-1/-1->1->0 [22] 2/-1/-1->1->0 [23] 2/-1/-1->1->0
+38dcf168f605:1417:1428 [3] NCCL INFO comm 0x559e612daa70 rank 3 nRanks 4 nNodes 1 localRanks 4 localRank 3 MNNVL 0
+38dcf168f605:1417:1426 [1] NCCL INFO P2P Chunksize set to 524288
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 01/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 02/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 03/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 04/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 05/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 06/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 07/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 08/24 : 0 1 2 3
+38dcf168f605:1417:1428 [3] NCCL INFO Trees [0] -1/-1/-1->3->2 [1] -1/-1/-1->3->2 [2] -1/-1/-1->3->2 [3] -1/-1/-1->3->2 [4] -1/-1/-1->3->2 [5] -1/-1/-1->3->2 [6] -1/-1/-1->3->2 [7] -1/-1/-1->3->2 [8] -1/-1/-1->3->2 [9] -1/-1/-1->3->2 [10] -1/-1/-1->3->2 [11] -1/-1/-1->3->2 [12] -1/-1/-1->3->2 [13] -1/-1/-1->3->2 [14] -1/-1/-1->3->2 [15] -1/-1/-1->3->2 [16] -1/-1/-1->3->2 [17] -1/-1/-1->3->2 [18] -1/-1/-1->3->2 [19] -1/-1/-1->3->2 [20] -1/-1/-1->3->2 [21] -1/-1/-1->3->2 [22] -1/-1/-1->3->2 [23] -1/-1/-1->3->2
+38dcf168f605:1417:1428 [3] NCCL INFO P2P Chunksize set to 524288
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 09/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 10/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 11/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 12/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 13/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 14/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 15/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 16/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 17/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 18/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 19/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 20/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 21/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 22/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Channel 23/24 : 0 1 2 3
+38dcf168f605:1417:1425 [0] NCCL INFO Trees [0] 1/-1/-1->0->-1 [1] 1/-1/-1->0->-1 [2] 1/-1/-1->0->-1 [3] 1/-1/-1->0->-1 [4] 1/-1/-1->0->-1 [5] 1/-1/-1->0->-1 [6] 1/-1/-1->0->-1 [7] 1/-1/-1->0->-1 [8] 1/-1/-1->0->-1 [9] 1/-1/-1->0->-1 [10] 1/-1/-1->0->-1 [11] 1/-1/-1->0->-1 [12] 1/-1/-1->0->-1 [13] 1/-1/-1->0->-1 [14] 1/-1/-1->0->-1 [15] 1/-1/-1->0->-1 [16] 1/-1/-1->0->-1 [17] 1/-1/-1->0->-1 [18] 1/-1/-1->0->-1 [19] 1/-1/-1->0->-1 [20] 1/-1/-1->0->-1 [21] 1/-1/-1->0->-1 [22] 1/-1/-1->0->-1 [23] 1/-1/-1->0->-1
+38dcf168f605:1417:1425 [0] NCCL INFO P2P Chunksize set to 524288
+38dcf168f605:1417:1428 [3] NCCL INFO PROFILER/Plugin: Could not find: libnccl-profiler.so
+38dcf168f605:1417:1428 [3] NCCL INFO Check P2P Type isAllDirectP2p 1 directMode 1 isAllCudaP2p 1
+38dcf168f605:1417:1426 [1] NCCL INFO PROFILER/Plugin: Could not find: libnccl-profiler.so
+38dcf168f605:1417:1426 [1] NCCL INFO Check P2P Type isAllDirectP2p 1 directMode 1 isAllCudaP2p 1
+38dcf168f605:1417:1427 [2] NCCL INFO PROFILER/Plugin: Could not find: libnccl-profiler.so
+38dcf168f605:1417:1427 [2] NCCL INFO Check P2P Type isAllDirectP2p 1 directMode 1 isAllCudaP2p 1
+38dcf168f605:1417:1431 [0] NCCL INFO [Proxy Service] Device 3 CPU core 34
+38dcf168f605:1417:1425 [0] NCCL INFO Check P2P Type isAllDirectP2p 1 directMode 1 isAllCudaP2p 1
+38dcf168f605:1417:1433 [0] NCCL INFO [Proxy Service UDS] Device 3 CPU core 99
+38dcf168f605:1417:1432 [0] NCCL INFO [Proxy Service] Device 1 CPU core 22
+38dcf168f605:1417:1434 [0] NCCL INFO [Proxy Service] Device 2 CPU core 36
+38dcf168f605:1417:1435 [0] NCCL INFO [Proxy Service UDS] Device 1 CPU core 24
+38dcf168f605:1417:1436 [0] NCCL INFO [Proxy Service UDS] Device 2 CPU core 101
+38dcf168f605:1417:1437 [0] NCCL INFO [Proxy Service] Device 0 CPU core 11
+38dcf168f605:1417:1438 [0] NCCL INFO [Proxy Service UDS] Device 0 CPU core 12
+38dcf168f605:1417:1426 [1] NCCL INFO TUNER/Plugin: Could not find: libnccl-tuner.so
+38dcf168f605:1417:1426 [1] NCCL INFO threadThresholds 8/8/64 | 32/8/64 | 512 | 512
+38dcf168f605:1417:1426 [1] NCCL INFO 24 coll channels, 24 collnet channels, 16 nvls channels, 32 p2p channels, 32 p2p channels per peer
+38dcf168f605:1417:1425 [0] NCCL INFO   Algorithm   |                            Tree                  |                            Ring                  |                   CollNetDirect                  |
+38dcf168f605:1417:1425 [0] NCCL INFO   Protocol    |             LL |          LL128 |         Simple |             LL |          LL128 |         Simple |             LL |          LL128 |         Simple |
+38dcf168f605:1417:1425 [0] NCCL INFO  Max NThreads |            512 |            640 |            512 |            512 |            640 |            512 |              0 |              0 |            640 |
+38dcf168f605:1417:1425 [0] NCCL INFO     Broadcast |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     7.2/ 141.0 |    15.9/ 331.2 |    11.8/ 360.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+38dcf168f605:1417:1425 [0] NCCL INFO        Reduce |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     7.2/ 141.0 |    15.9/ 331.2 |    11.8/ 360.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+38dcf168f605:1417:1425 [0] NCCL INFO     AllGather |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     8.4/ 188.0 |    19.7/ 441.6 |    18.6/ 480.0 |     2.4/   0.0 |     2.4/   0.0 |    40.8/   0.0 |
+38dcf168f605:1417:1425 [0] NCCL INFO ReduceScatter |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     8.4/ 188.0 |    19.7/ 441.6 |    18.6/ 480.0 |     2.4/   0.0 |     2.4/   0.0 |    40.8/   0.0 |
+38dcf168f605:1417:1425 [0] NCCL INFO     AllReduce |    10.4/   0.0 |    21.5/   0.0 |    32.4/   0.0 |    10.2/  94.0 |    25.4/ 220.8 |    28.8/ 240.0 |     2.4/   0.0 |     2.4/   0.0 |    40.8/   0.0 |
+38dcf168f605:1417:1425 [0] NCCL INFO   Algorithm   |                    CollNetChain                  |                            NVLS                  |                        NVLSTree                  |
+38dcf168f605:1417:1425 [0] NCCL INFO   Protocol    |             LL |          LL128 |         Simple |             LL |          LL128 |         Simple |             LL |          LL128 |         Simple |
+38dcf168f605:1417:1425 [0] NCCL INFO  Max NThreads |              0 |              0 |            640 |              0 |              0 |            640 |              0 |              0 |            640 |
+38dcf168f605:1417:1425 [0] NCCL INFO     Broadcast |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+38dcf168f605:1417:1425 [0] NCCL INFO        Reduce |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+38dcf168f605:1417:1425 [0] NCCL INFO     AllGather |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |    25.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+38dcf168f605:1417:1425 [0] NCCL INFO ReduceScatter |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |    25.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+38dcf168f605:1417:1425 [0] NCCL INFO     AllReduce |     0.0/   0.0 |     0.0/   0.0 |    46.8/   0.0 |     0.0/   0.0 |     0.0/   0.0 |    25.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |    25.0/   0.0 |
+38dcf168f605:1417:1425 [0] NCCL INFO   Algorithm   |                             PAT                  |
+38dcf168f605:1417:1425 [0] NCCL INFO   Protocol    |             LL |          LL128 |         Simple |             LL |          LL128 |         Simple |             LL |          LL128 |         Simple |
+38dcf168f605:1417:1425 [0] NCCL INFO  Max NThreads |              0 |              0 |              0 |
+38dcf168f605:1417:1425 [0] NCCL INFO     Broadcast |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+38dcf168f605:1417:1425 [0] NCCL INFO        Reduce |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+38dcf168f605:1417:1425 [0] NCCL INFO     AllGather |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+38dcf168f605:1417:1425 [0] NCCL INFO ReduceScatter |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+38dcf168f605:1417:1425 [0] NCCL INFO     AllReduce |     0.0/   0.0 |     0.0/   0.0 |     0.0/   0.0 |
+38dcf168f605:1417:1425 [0] NCCL INFO threadThresholds 8/8/64 | 32/8/64 | 512 | 512
+38dcf168f605:1417:1425 [0] NCCL INFO 24 coll channels, 24 collnet channels, 16 nvls channels, 32 p2p channels, 32 p2p channels per peer
+38dcf168f605:1417:1425 [0] NCCL INFO CC Off, workFifoBytes 1048576
+38dcf168f605:1417:1428 [3] NCCL INFO threadThresholds 8/8/64 | 32/8/64 | 512 | 512
+38dcf168f605:1417:1428 [3] NCCL INFO 24 coll channels, 24 collnet channels, 16 nvls channels, 32 p2p channels, 32 p2p channels per peer
+38dcf168f605:1417:1427 [2] NCCL INFO threadThresholds 8/8/64 | 32/8/64 | 512 | 512
+38dcf168f605:1417:1427 [2] NCCL INFO 24 coll channels, 24 collnet channels, 16 nvls channels, 32 p2p channels, 32 p2p channels per peer
+38dcf168f605:1417:1425 [0] NCCL INFO ncclCommInitRankConfig comm 0x559e60fc01c0 rank 0 nranks 4 cudaDev 0 nvmlDev 0 busId 41000 commId 0xc065ec09e837104c - Init COMPLETE
+38dcf168f605:1417:1428 [3] NCCL INFO ncclCommInitRankConfig comm 0x559e612daa70 rank 3 nranks 4 cudaDev 3 nvmlDev 3 busId 87000 commId 0xc065ec09e837104c - Init COMPLETE
+38dcf168f605:1417:1428 [3] NCCL INFO Init timings - ncclCommInitRankConfig: rank 3 nranks 4 total 1.12 (kernels 0.65, alloc 0.26, bootstrap 0.00, allgathers 0.00, topo 0.03, graphs 0.02, connections 0.14, rest 0.01)
+38dcf168f605:1417:1425 [0] NCCL INFO Init timings - ncclCommInitRankConfig: rank 0 nranks 4 total 1.12 (kernels 0.65, alloc 0.26, bootstrap 0.00, allgathers 0.01, topo 0.03, graphs 0.02, connections 0.13, rest 0.02)
+38dcf168f605:1417:1426 [1] NCCL INFO ncclCommInitRankConfig comm 0x559e610c8f50 rank 1 nranks 4 cudaDev 1 nvmlDev 1 busId 44000 commId 0xc065ec09e837104c - Init COMPLETE
+38dcf168f605:1417:1426 [1] NCCL INFO Init timings - ncclCommInitRankConfig: rank 1 nranks 4 total 1.12 (kernels 0.65, alloc 0.26, bootstrap 0.00, allgathers 0.01, topo 0.03, graphs 0.01, connections 0.13, rest 0.02)
+38dcf168f605:1417:1427 [2] NCCL INFO ncclCommInitRankConfig comm 0x559e611d1ce0 rank 2 nranks 4 cudaDev 2 nvmlDev 2 busId 86000 commId 0xc065ec09e837104c - Init COMPLETE
+38dcf168f605:1417:1427 [2] NCCL INFO Init timings - ncclCommInitRankConfig: rank 2 nranks 4 total 1.12 (kernels 0.65, alloc 0.26, bootstrap 0.00, allgathers 0.01, topo 0.03, graphs 0.02, connections 0.14, rest 0.01)
+#
+#                                                              out-of-place                       in-place          
+#       size         count      type   redop    root     time   algbw   busbw  #wrong     time   algbw   busbw  #wrong 
+#        (B)    (elements)                               (us)  (GB/s)  (GB/s)             (us)  (GB/s)  (GB/s)         
+38dcf168f605:1417:1417 [3] NCCL INFO Symmetric VA size=80GB
+38dcf168f605:1417:1417 [2] NCCL INFO Symmetric VA size=80GB
+38dcf168f605:1417:1417 [1] NCCL INFO Symmetric VA size=80GB
+38dcf168f605:1417:1417 [0] NCCL INFO Symmetric VA size=80GB
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 00/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 00/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 01/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 00/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 01/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 02/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 01/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 02/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 03/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 00/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 03/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 02/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 04/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 01/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 04/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 03/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 05/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 02/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 05/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 04/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 06/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 03/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 06/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 05/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 07/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 04/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 07/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 06/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 08/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 05/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 08/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 07/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 09/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 06/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 09/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 08/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 10/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 07/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 10/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 09/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 11/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 08/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 11/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 10/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 12/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 09/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 12/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 11/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 13/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 10/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 13/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 12/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 11/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 14/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 14/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 13/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 12/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 15/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 15/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 14/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 13/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 16/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 16/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 15/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 14/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 17/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 17/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 16/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 15/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 18/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 18/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 17/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 16/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 19/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 17/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 18/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 19/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 19/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 18/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 20/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 20/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 19/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 21/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 21/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 20/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 20/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 22/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 21/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 22/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1442 [0] NCCL INFO Channel 23/0 : 0[0] -> 1[1] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 22/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1440 [2] NCCL INFO Channel 23/0 : 2[2] -> 3[3] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 21/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Channel 23/0 : 3[3] -> 0[0] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 22/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1441 [1] NCCL INFO Channel 23/0 : 1[1] -> 2[2] via P2P/direct pointer
+38dcf168f605:1417:1439 [3] NCCL INFO Connected all rings, use ring PXN 0 GDR 1
+38dcf168f605:1417:1441 [1] NCCL INFO Connected all rings, use ring PXN 0 GDR 1
+38dcf168f605:1417:1442 [0] NCCL INFO Connected all rings, use ring PXN 0 GDR 1
+38dcf168f605:1417:1440 [2] NCCL INFO Connected all rings, use ring PXN 0 GDR 1
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+   268435456      67108864     float     sum      -138dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+  1186.34  226.27  339.41       038dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 268435456 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+  1189.60  225.65  338.48       0
+   536870912     134217728     float     sum      -138dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+  2320.28  231.38  347.07       038dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 536870912 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+  2310.13  232.40  348.60       0
+  1073741824     268435456     float     sum      -138dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+  4557.01  235.62  353.44       038dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 1073741824 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+  4555.30  235.71  353.57       0
+  2147483648     536870912     float     sum      -138dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+  8937.88  240.27  360.40       038dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 2147483648 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+  8969.33  239.43  359.14       0
+  4294967296    1073741824     float     sum      -138dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+  17737.0  242.15  363.22       038dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 4294967296 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+  17763.2  241.79  362.69       0
+  8589934592    2147483648     float     sum      -138dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+  35308.1  243.29  364.93       038dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+38dcf168f605:1417:1417 [0] NCCL INFO AllReduce: 8589934592 Bytes -> Algo RING proto SIMPLE channel{Lo..Hi}={0..23}
+  35318.0  243.22  364.83       0
+38dcf168f605:1417:1417 [0] NCCL INFO comm 0x559e60fc01c0 rank 0 nranks 4 cudaDev 0 busId 41000 - Destroy COMPLETE
+38dcf168f605:1417:1417 [3] NCCL INFO comm 0x559e612daa70 rank 3 nranks 4 cudaDev 3 busId 87000 - Destroy COMPLETE
+38dcf168f605:1417:1417 [2] NCCL INFO comm 0x559e611d1ce0 rank 2 nranks 4 cudaDev 2 busId 86000 - Destroy COMPLETE
+38dcf168f605:1417:1417 [1] NCCL INFO comm 0x559e610c8f50 rank 1 nranks 4 cudaDev 1 busId 44000 - Destroy COMPLETE
+# Out of bounds values : 0 OK
+# Avg bus bandwidth    : 354.647 
+#
+# Collective test concluded: all_reduce_perf
+#
+
+38dcf168f605:1417:1417 [3] NCCL INFO ENV/Plugin: Closing env plugin ncclEnvDefault

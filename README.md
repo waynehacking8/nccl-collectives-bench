@@ -67,20 +67,26 @@ multi-node-oriented) trails both. **Protocol study @256MB:** Simple 340 / LL128 
 **Scaling with GPU count** (all_reduce, `analysis/scaling.py`): peak busbw 2→347, 4→365,
 **6→443 GB/s**; peak algbw 2→347, 4→243, 6→266 GB/s. Read the busbw column with care — busbw
 is nccl-tests' *ring-equivalent* normalization (algbw × 2(N−1)/N) and equals physical
-per-link traffic only when the algorithm actually is Ring. These runs use NCCL's automatic
-algorithm selection: the 4-GPU result matches the pinned-Ring sweep (366, not NVLS's 376), so
-it is a real per-link rate (76% of budget); the 6-GPU 443 (93% of budget) is **ambiguous** —
-if the tuner switched to NVLS at the higher rank count (the likely reading, since with
-in-switch reduction each GPU ships its data once), the links physically carry only
-~algbw = 266 GB/s (56% of budget) and most of the 365→443 rise is the normalization formula,
-not extra bytes on the wire. The committed logs cannot distinguish the two readings (no
-`NCCL_DEBUG` capture). Full decomposition and the defensible claims:
-[`results/scaling_report.md`](results/scaling_report.md); resolving the attribution
-(re-run with pinned `NCCL_ALGO` + `NCCL_DEBUG=INFO,TUNING`) is a roadmap item.
+per-link traffic only when the algorithm actually is Ring. The attribution run
+(`analysis/scaling_attribution.py`: 9 arms, `-g 2/4/6` × {auto, pinned Ring, pinned NVLS},
+`NCCL_DEBUG=INFO,TUNING` captured in every log) **measured** what the tuner picks: **Ring at
+2/4 GPUs, NVLS at 6 GPUs**. So the 4-GPU 365 is a real per-link rate (76% of budget), but the
+6-GPU 443 is NVLS traffic — with in-switch reduction each GPU ships its data once, so the
+links physically carry only ~algbw = 266 GB/s (**56% of budget**) and most of the 365→443
+rise is the normalization formula, not extra bytes on the wire. Ring's physical link
+efficiency is flat across N (73→76→77%); what NVLS actually buys at 6 GPUs is **+21%
+end-to-end algbw** (220→266 GB/s vs pinned Ring) — by removing traffic from the links, not by
+saturating them. Nine-arm table and debug-log evidence:
+[`results/scaling_attributed/report.md`](results/scaling_attributed/report.md); decomposition:
+[`results/scaling_report.md`](results/scaling_report.md).
 
-**Peak all_reduce busbw climbs with GPU count (2→347, 4→365, 6→443 GB/s) while algbw falls (347→243→266 GB/s) — the divergence is the ring factor 2(N−1)/N, which is exactly why the busbw curve needs the algorithm-attribution caveat above; the dashed line is the 478 GB/s unidirectional per-GPU budget:**
+**Peak all_reduce busbw climbs with GPU count (2→347, 4→365, 6→443 GB/s) while algbw falls (347→243→266 GB/s) — the divergence is the ring factor 2(N−1)/N, which is exactly why the busbw curve needs the algorithm attribution above; the dashed line is the 478 GB/s unidirectional per-GPU budget:**
 
 ![Peak all_reduce bus bandwidth and algorithm bandwidth vs GPU count (2/4/6) against the 478 GB/s NVLink unidirectional budget](results/scaling_busbw.png)
+
+**The attribution run side by side: what nccl-tests reports (left) vs what the links physically carry (right) — the auto/tuner curve tracks Ring at 2/4 GPUs and switches to NVLS at 6, where reported busbw rises to 443 GB/s while physical per-link traffic drops to ~266 GB/s:**
+
+![All-reduce algorithm attribution: reported busbw vs physical per-link traffic for auto, pinned Ring, and pinned NVLS at 2/4/6 GPUs](results/scaling_attributed/attribution.png)
 
 > Note: `make sweep` defaults to 4 GPUs. On a shared box, pin to free GPUs and never touch
 > a busy one: `CUDA_DEVICE_ORDER=PCI_BUS_ID CUDA_VISIBLE_DEVICES=2,3,4,5 make sweep`
