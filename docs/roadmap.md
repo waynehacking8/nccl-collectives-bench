@@ -27,27 +27,15 @@
 
 ## Out of scope
 - Reimplementing collectives. (A hand-written ring all-reduce demo is a maybe, clearly labeled.)
+- **Full-node (8-GPU) NVLS reference reproduction (~480 GB/s, nccl-tests #312).** GPU 0 on this
+  host is permanently reserved for a production service, so the full 8-GPU set is never
+  available; a 7-GPU partial run would not match the published reference (different busbw
+  factor, different NVLS tree) and was judged not worth the ambiguity. All measurements in
+  this repo cap at 6 GPUs, stated explicitly.
 
 ## Phase 4 — Literature-ceiling reproductions on this box (specified)
 
 Goal: turn published NCCL/NVSwitch reference numbers into measured rows from this exact host.
-
-- [ ] **7-GPU all-reduce: Ring vs NVLS (8-GPU published reference: ~370 vs ~480 GB/s busbw, nccl-tests #312).**
-  GPU 0 is permanently reserved for a production service on this host, so the maximum
-  measurable set is 7 GPUs — stated up front; the 8-GPU published reference is used as the
-  comparison point with the count difference noted.
-  - **Question:** this repo's measurements stop at 6 GPUs (443 GB/s). At 7 GPUs, does NVLS
-    continue the scaling trend toward the published 8-GPU ~480 GB/s reference — and how should
-    the fact that NVLS busbw can exceed the 450 GB/s per-GPU line rate be explained
-    (in-switch reduction makes the busbw formula over-credit NVLS)?
-  - **Method:** requires GPUs 1-7 idle (same quiet-window arrangement as the Phase 2 re-run):
-    `CUDA_VISIBLE_DEVICES=1,2,3,4,5,6,7 all_reduce_perf -b 8 -e 8G -f 2 -g 7` with
-    `NCCL_NVLS_ENABLE=1` vs `=0`. Note the busbw factor at N=7 is 2(N-1)/N = 1.71 (vs 1.75 at
-    N=8) — account for this when comparing against the 8-GPU reference.
-  - **Read-out:** Ring vs NVLS busbw curves at 7 GPUs; extend the 2/4/6 scaling curve to 7;
-    report as "% of 478 GB/s unidirectional budget" and "% of the 900 GB/s bidirectional /
-    3.6 TB/s bisection architecture ceiling"; explain the NVLS over-credit explicitly; state
-    the 7-vs-8 count difference next to every comparison with the published reference.
 
 - [ ] **NCCL ≥2.27 symmetric memory vs the measured latency floors (reference: up to 9× lower
   small-message latency).**
@@ -56,7 +44,8 @@ Goal: turn published NCCL/NVSwitch reference numbers into measured rows from thi
     the floor is recoverable on this box without root?
   - **Method:** build NCCL ≥2.27 + matching nccl-tests in user space; register buffers
     (`ncclMemAlloc` + `ncclCommRegister`, `all_reduce_perf -R 2`); re-run the small-message
-    sweep on the 4-GPU slice and (when idle) the full 8 GPUs.
+    sweep on the same 4-GPU slice as the published floors (GPU 0 is reserved for production;
+    all measurements in this repo cap at 6 GPUs).
   - **Read-out:** symmetric vs non-symmetric latency/busbw-vs-size overlay; the new floor
     re-prices the TP-decode ceiling (271/456 tok/s for Llama-70B TP=4) — if the floor halves,
     the comms-bound ceiling roughly doubles.
