@@ -7,10 +7,10 @@ The busbw sweep in this repo measures *steady-state bandwidth* (8 MB+ messages).
 LLM tensor-parallel **decode** lives in the opposite regime: each transformer layer
 issues two all-reduces (post-attention, post-MLP), and at batch=1 each one moves only
 `hidden_size * batch * 2` bytes — e.g. 8192*1*2 = 16 KB. At 16 KB an NCCL all-reduce is
-nowhere near bandwidth-bound; it sits on the ~23 µs kernel-launch + handshake floor (measured).
+nowhere near bandwidth-bound; it sits on the ~23 µs kernel-launch + handshake floor.
 
 A 70B-class model (80 layers) therefore pays 2*80 = 160 all-reduces per token. At ~23 µs
-each that is ~3.7 ms/token of pure comms launch overhead -> a hard ceiling of ~271 tok/s (measured)
+each that is ~3.7 ms/token of pure comms launch overhead -> a hard ceiling of ~271 tok/s
 from communication alone, before any compute. The production fix is **CUDA Graphs**:
 capture the whole decode step once and replay it, collapsing per-op launch latency. This
 script measures exactly that gap, then the companion roofline.py turns it into a
@@ -44,14 +44,13 @@ def time_eager(buf, iters):
     for _ in range(WARMUP):
         dist.all_reduce(buf)
     torch.cuda.synchronize()
-    times = []
-    for _ in range(iters):
-        start, end = torch.cuda.Event(True), torch.cuda.Event(True)
-        start.record()
+    events = [(torch.cuda.Event(True), torch.cuda.Event(True)) for _ in range(iters)]
+    for s, e in events:
+        s.record()
         dist.all_reduce(buf)
-        end.record()
-        torch.cuda.synchronize()
-        times.append(start.elapsed_time(end) * 1e3)  # us
+        e.record()
+    torch.cuda.synchronize()
+    times = [s.elapsed_time(e) * 1e3 for s, e in events]  # us
     mean_t = sum(times) / len(times)
     std_t = math.sqrt(sum((t - mean_t) ** 2 for t in times) / len(times))
     return mean_t, std_t
@@ -74,14 +73,13 @@ def time_graph(buf, iters):
     for _ in range(WARMUP):
         g.replay()
     torch.cuda.synchronize()
-    times = []
-    for _ in range(iters):
-        start, end = torch.cuda.Event(True), torch.cuda.Event(True)
+    events = [(torch.cuda.Event(True), torch.cuda.Event(True)) for _ in range(iters)]
+    for start, end in events:
         start.record()
         g.replay()
         end.record()
-        torch.cuda.synchronize()
-        times.append(start.elapsed_time(end) * 1e3)  # us
+    torch.cuda.synchronize()
+    times = [start.elapsed_time(end) * 1e3 for start, end in events]  # us
     mean_t = sum(times) / len(times)
     std_t = math.sqrt(sum((t - mean_t) ** 2 for t in times) / len(times))
     return mean_t, std_t
