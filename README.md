@@ -98,6 +98,8 @@ regime — tiny (≤64 KB) all-reduces, twice per layer, latency-bound on the ~2
 [`tp_latency/`](tp_latency/): CUDA-Graph capture vs eager, custom one-shot all-reduce vs NCCL,
 and an analytical comms-roofline for TP=N decode validated against measurement.
 
+> **Data provenance:** The latency floor and tok/s ceiling values below are from a controlled quiet-box measurement (`results/quiet/tp_latency.json`; eager floor 23.1 µs, graph floor 13.7 µs). The current `results/tp_latency.json` reflects a shared-box re-run under production NVSwitch contention (~36 µs eager); see `results/tp_latency_report.md` §4 for the cross-comparison.
+
 **TP=4 all-reduce latency in the decode regime: CUDA-Graph capture flattens the ~22 µs eager floor (and its launch-jitter spikes) to a stable ~12–15 µs across the small (≤64 KB, shaded) message sizes a TP decode actually uses:**
 
 ![TP=4 all-reduce latency vs message size, eager vs CUDA Graph, on a 4-GPU slice of an 8× H100 NVSwitch host](results/tp_latency.png)
@@ -108,7 +110,7 @@ The original sweep showed an 82 µs eager spike at one message size, initially a
 NVSwitch-fabric jitter from other tenants on the box. A controlled re-run with every
 non-production tenant stopped (`results/quiet/`) **rejects that attribution**: a same-magnitude
 spike reappears at a *different* size, the eager/graph latency floors are unchanged
-(23.1/13.7 µs shared → 23.2/12.9 µs quiet), and the bandwidth sweep matches at steady-state
+(~36/~20 µs shared [current shared-box run] → 23.2/12.9 µs quiet), and the bandwidth sweep matches at steady-state
 large-message sizes (all_reduce within 4.4%; the all_gather protocol-transition zone,
 128 KB–2 MB, shows run-to-run variation up to ~25% — normal NCCL protocol switching, not tenant
 interference). The spike is **host-side launch jitter intrinsic to eager-mode submission** — and it never
