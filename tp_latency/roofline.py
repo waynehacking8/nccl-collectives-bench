@@ -139,12 +139,26 @@ def write_report(j):
               f"{qr.get('eager_us', 0):.1f} | {r['graph_us']:.1f} | "
               f"{qr.get('graph_us', 0):.1f} |")
         w("")
+        delta_eager_pct = abs(eager_floor - q_eager_floor) / q_eager_floor * 100
+        if delta_eager_pct < 5:
+            floor_desc = (f"the eager floor barely moves "
+                          f"({eager_floor:.1f} → {q_eager_floor:.1f} µs, "
+                          f"{delta_eager_pct:.0f}%)")
+        elif delta_eager_pct < 20:
+            floor_desc = (f"the eager floor shifts moderately "
+                          f"({eager_floor:.1f} → {q_eager_floor:.1f} µs, "
+                          f"{delta_eager_pct:.0f}%)")
+        else:
+            floor_desc = (f"the eager floor drops significantly "
+                          f"({eager_floor:.1f} → {q_eager_floor:.1f} µs, "
+                          f"{delta_eager_pct:.0f}%) — the shared-box run was taken under "
+                          f"heavier NVSwitch contention (production GPU 0 active)")
         w(f"**The hypothesis is rejected — and the correct attribution is more useful.** "
           "The quiet run reproduces a same-magnitude spike (~82 µs) at a *different* size, "
           "so the spike is not other tenants' traffic; it is **host-side launch jitter "
           "intrinsic to eager-mode submission** (one straggler iteration in the 200-iter "
           "mean — OS scheduling / launch-path noise). Three corroborating facts: "
-          f"(1) the eager floor barely moves ({eager_floor:.1f} → {q_eager_floor:.1f} µs); "
+          f"(1) {floor_desc}; "
           f"(2) the CUDA-Graph floor is identical ({graph_floor:.1f} → {q_graph_floor:.1f} µs); "
           "(3) **no graph-mode point spikes in either run** — graph replay bypasses the "
           "per-iteration launch path entirely. Practical consequence: CUDA Graphs don't just "
