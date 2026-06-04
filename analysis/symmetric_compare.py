@@ -68,6 +68,8 @@ def main():
     w("## Latency floors (median over sizes <= 2 KB)\n")
     w("| configuration | floor (us) | vs 2.18.3 eager (23.1 us) |")
     w("|---|---|---|")
+    # PyTorch bench measured 23.1 µs; nccl-tests measured 23.3 µs (different tools).
+    # Use 23.1 (PyTorch bench) as reference since TP decode uses PyTorch dist.
     ref = 23.1
     for name, rows in runs.items():
         f = floor(rows)

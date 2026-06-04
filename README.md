@@ -98,7 +98,7 @@ regime — tiny (≤64 KB) all-reduces, twice per layer, latency-bound on the ~2
 [`tp_latency/`](tp_latency/): CUDA-Graph capture vs eager, custom one-shot all-reduce vs NCCL,
 and an analytical comms-roofline for TP=N decode validated against measurement.
 
-**TP=4 all-reduce latency in the decode regime: CUDA-Graph capture flattens the ~22 µs eager floor (and its launch-jitter spikes) to a stable ~12–16 µs across the small (≤64 KB, shaded) message sizes a TP decode actually uses:**
+**TP=4 all-reduce latency in the decode regime: CUDA-Graph capture flattens the ~22 µs eager floor (and its launch-jitter spikes) to a stable ~12–15 µs across the small (≤64 KB, shaded) message sizes a TP decode actually uses:**
 
 ![TP=4 all-reduce latency vs message size, eager vs CUDA Graph, on a 4-GPU slice of an 8× H100 NVSwitch host](results/tp_latency.png)
 

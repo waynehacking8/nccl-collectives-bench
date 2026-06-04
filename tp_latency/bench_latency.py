@@ -7,10 +7,10 @@ The busbw sweep in this repo measures *steady-state bandwidth* (8 MB+ messages).
 LLM tensor-parallel **decode** lives in the opposite regime: each transformer layer
 issues two all-reduces (post-attention, post-MLP), and at batch=1 each one moves only
 `hidden_size * batch * 2` bytes — e.g. 8192*1*2 = 16 KB. At 16 KB an NCCL all-reduce is
-nowhere near bandwidth-bound; it sits on the ~20 us kernel-launch + handshake floor.
+nowhere near bandwidth-bound; it sits on the ~23 µs kernel-launch + handshake floor (measured).
 
-A 70B-class model (80 layers) therefore pays 2*80 = 160 all-reduces per token. At ~20 us
-each that is ~3.2 ms/token of pure comms launch overhead -> a hard ceiling of ~310 tok/s
+A 70B-class model (80 layers) therefore pays 2*80 = 160 all-reduces per token. At ~23 µs
+each that is ~3.7 ms/token of pure comms launch overhead -> a hard ceiling of ~271 tok/s (measured)
 from communication alone, before any compute. The production fix is **CUDA Graphs**:
 capture the whole decode step once and replay it, collapsing per-op launch latency. This
 script measures exactly that gap, then the companion roofline.py turns it into a
@@ -19,7 +19,7 @@ tokens/s ceiling and validates an analytical model.
 Run (4 ranks, pinned GPUs chosen by the launcher / docker --gpus):
     torchrun --nproc_per_node=4 tp_latency/bench_latency.py
 """
-import json, os
+import json, math, os
 import torch
 import torch.distributed as dist
 
@@ -41,16 +41,20 @@ WARMUP = 20
 
 def time_eager(buf, iters):
     torch.cuda.synchronize()
-    start, end = torch.cuda.Event(True), torch.cuda.Event(True)
     for _ in range(WARMUP):
         dist.all_reduce(buf)
     torch.cuda.synchronize()
-    start.record()
+    times = []
     for _ in range(iters):
+        start, end = torch.cuda.Event(True), torch.cuda.Event(True)
+        start.record()
         dist.all_reduce(buf)
-    end.record()
-    torch.cuda.synchronize()
-    return start.elapsed_time(end) / iters * 1e3  # us
+        end.record()
+        torch.cuda.synchronize()
+        times.append(start.elapsed_time(end) * 1e3)  # us
+    mean_t = sum(times) / len(times)
+    std_t = math.sqrt(sum((t - mean_t) ** 2 for t in times) / len(times))
+    return mean_t, std_t
 
 
 def time_graph(buf, iters):
@@ -70,26 +74,31 @@ def time_graph(buf, iters):
     for _ in range(WARMUP):
         g.replay()
     torch.cuda.synchronize()
-    start, end = torch.cuda.Event(True), torch.cuda.Event(True)
-    start.record()
+    times = []
     for _ in range(iters):
+        start, end = torch.cuda.Event(True), torch.cuda.Event(True)
+        start.record()
         g.replay()
-    end.record()
-    torch.cuda.synchronize()
-    return start.elapsed_time(end) / iters * 1e3  # us
+        end.record()
+        torch.cuda.synchronize()
+        times.append(start.elapsed_time(end) * 1e3)  # us
+    mean_t = sum(times) / len(times)
+    std_t = math.sqrt(sum((t - mean_t) ** 2 for t in times) / len(times))
+    return mean_t, std_t
 
 
 def bench_one(nbytes, rank):
     n = max(1, nbytes // DTYPE.itemsize)
     buf = torch.ones(n, dtype=DTYPE, device="cuda")
     dist.barrier()
-    eager = time_eager(buf, ITERS)
+    eager, eager_std = time_eager(buf, ITERS)
     dist.barrier()
-    graph = time_graph(buf, ITERS)
+    graph, graph_std = time_graph(buf, ITERS)
     dist.barrier()
     del buf
     torch.cuda.empty_cache()
-    return {"bytes": n * DTYPE.itemsize, "eager_us": eager, "graph_us": graph,
+    return {"bytes": n * DTYPE.itemsize, "eager_us": eager, "eager_std_us": eager_std,
+            "graph_us": graph, "graph_std_us": graph_std,
             "speedup": eager / graph if graph else 0.0}
 
 
@@ -108,8 +117,8 @@ def main():
         r = bench_one(nbytes, rank)
         if rank == 0:
             results["size_sweep"].append(r)
-            print(f"  sweep {r['bytes']:>9d} B  eager {r['eager_us']:7.1f} us  "
-                  f"graph {r['graph_us']:7.1f} us  x{r['speedup']:.2f}", flush=True)
+            print(f"  sweep {r['bytes']:>9d} B  eager {r['eager_us']:7.1f}±{r['eager_std_us']:.1f} us  "
+                  f"graph {r['graph_us']:7.1f}±{r['graph_std_us']:.1f} us  x{r['speedup']:.2f}", flush=True)
 
     for name, hidden, batch in LLM_POINTS:
         nbytes = hidden * batch * DTYPE.itemsize
@@ -118,7 +127,8 @@ def main():
         if rank == 0:
             results["llm_points"].append(r)
             print(f"  {name:12s} {hidden}x{batch} {r['bytes']:>8d} B  "
-                  f"eager {r['eager_us']:7.1f} us  graph {r['graph_us']:7.1f} us  "
+                  f"eager {r['eager_us']:7.1f}±{r['eager_std_us']:.1f} us  "
+                  f"graph {r['graph_us']:7.1f}±{r['graph_std_us']:.1f} us  "
                   f"x{r['speedup']:.2f}", flush=True)
 
     if rank == 0:
